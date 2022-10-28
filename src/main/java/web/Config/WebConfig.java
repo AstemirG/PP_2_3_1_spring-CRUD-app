@@ -37,11 +37,11 @@ import java.util.Properties;
 public class WebConfig implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
+    private final Environment env;
     @Autowired
-    private Environment env;
-    @Autowired
-    public WebConfig(ApplicationContext applicationContext) {
+    public WebConfig(ApplicationContext applicationContext, Environment env) {
         this.applicationContext = applicationContext;
+        this.env = env;
     }
 
     @Bean
@@ -98,6 +98,7 @@ public class WebConfig implements WebMvcConfigurer {
         entityManagerFactoryBean.setDataSource(getDataSource());
         entityManagerFactoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
         entityManagerFactoryBean.setPackagesToScan("web");
+        entityManagerFactoryBean.setJpaProperties(props);
 
         return entityManagerFactoryBean;
     }
