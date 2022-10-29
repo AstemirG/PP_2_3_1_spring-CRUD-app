@@ -20,4 +20,30 @@ public class UserDaoImpl implements UserDao {
         List<User> users = manager.createQuery("select us from User us").getResultList();
         return users;
     }
+
+    @Override
+    @Transactional
+    public User getUserById(int id) {
+        return manager.find(User.class,id);
+    }
+
+    @Override
+    @Transactional
+    public void saveUser(User user) {
+        manager.persist(user);
+    }
+
+    @Override
+    @Transactional
+    public void updateUser(int id, User updatedUser) {
+        User user = manager.find(User.class,id);
+        user.setFirstName(updatedUser.getFirstName());
+        user.setLastName(updatedUser.getLastName());
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(int id) {
+        manager.remove(getUserById(id));
+    }
 }

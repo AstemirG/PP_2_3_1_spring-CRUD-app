@@ -4,30 +4,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import web.Dao.UserDao;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import web.Model.User;
+import web.Service.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
-    private final UserDao dao;
+    private final UserService service;
 
     @Autowired
-    public UserController(UserDao dao) {
-        this.dao = dao;
+    public UserController(UserService service) {
+        this.service = service;
     }
 
-    @GetMapping(value = "/allUsers")
+    @GetMapping(value = "/all")
     public String showAllUsers(Model model) {
-        List<User> allUsers = dao.getAllUsers();
+        List<User> allUsers = service.getAllUsers();
         model.addAttribute("allUsers",allUsers);
-        List<String> messages = new ArrayList<>();
-        messages.add("Hello!");
-        messages.add("I'm Spring MVC application");
-        messages.add("5.2.0 version by sep'19 ");
-        model.addAttribute("messages", messages);
         return "all-Users";
     }
+
+    @GetMapping(value = "/new")
+    public String newUser(Model model) {
+        model.addAttribute("user",new User());
+        return "add-User";
+    }
+
+    @PostMapping()
+    public String createUser(@ModelAttribute("user") User user) {
+        service.saveUser(user);
+        return "redirect:/users/all";
+    }
+
 }
